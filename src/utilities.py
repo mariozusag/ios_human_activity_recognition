@@ -3,6 +3,9 @@
 # Purpose: Provide various utility functions
 # Description:
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 
 
 def append_df(df_orig, df_to_append, label):
@@ -36,3 +39,44 @@ def clean_non_numeric_values(df, cols):
         df = df[(~pd.to_numeric(df[col], errors='coerce').isnull())]
         df[col] = pd.to_numeric(df[col])
     return df
+
+
+def plot_classification_report(classificationReport,
+                               title='Classification report',
+                               cmap='YlGnBu',
+                               save_as='../experimental_results/CNN_2019-02-19-13:44:04_best/report.pdf'):
+
+    classificationReport = classificationReport.replace('\n\n', '\n')
+    classificationReport = classificationReport.replace(' / ', '/')
+    lines = classificationReport.split('\n')
+
+    classes, plotMat, support, class_names = [], [], [], []
+    for line in lines[1:]:
+        t = line.strip().split()
+        if len(t) < 2:
+            continue
+        classes.append(t[0])
+        if "avg" in t:
+            v = [float(x)*100 for x in t[2: len(t) - 1]]
+            class_names.append(t[0] + "-" + t[1])
+        else:
+            v = [float(x)*100 for x in t[1: len(t) - 1]]
+            class_names.append(t[0])
+        support.append(int(t[-1]))
+
+        plotMat.append(v)
+
+    plotMat = np.array(plotMat)
+    xticklabels = ['Precision', 'Recall', 'F1-score']
+    yticklabels = ['{0} ({1})'.format(class_names[idx], sup)
+                   for idx, sup in enumerate(support)]
+
+    plt.figure()
+    sns.heatmap(plotMat, fmt=".1f", square=True, annot=True, cmap=cmap,
+                cbar=True, xticklabels=xticklabels, yticklabels=yticklabels)
+    plt.title(title)
+    plt.xticks(rotation=45)
+    plt.ylabel('Metrics')
+    plt.xlabel('Classes')
+    plt.tight_layout()
+    plt.savefig(save_as)

@@ -5,14 +5,16 @@
 
 import pandas as pd
 import os
-from utilities import append_df, clean_non_numeric_values
+from src.utilities import append_df, clean_non_numeric_values
 
 
 DEFAULT_WISDM_PATH = '../../data/wisdm_lab/WISDM_ar_v1.1_raw.txt'
 DEFAULT_MOTION_SENSE_PATH = '../../data/motion_sense/'
 DEFAULT_RUN_WALK_PATH = '../../data/run_walk/'
+DEFAULT_REAL_DATA_PATH = '../../data/my_iphone_data/'
 columns = ['timestamp', 'label', 'acc.x', 'acc.y', 'acc.z']  # columns to keep
 numerical_cols = ['acc.x', 'acc.y', 'acc.z']
+
 
 class DataLoader:
 
@@ -56,7 +58,7 @@ class DataLoader:
                         data_as_dict[idx] = {original_columns[i]: values[i] for i in range(len(values))}
             data = pd.DataFrame.from_dict(data_as_dict, orient='index')
             data = data[columns]
-            data = data.replace({"label": {label:label.lower() for label in pd.unique(data['label'])}})
+            data = data.replace({"label": {label: label.lower() for label in pd.unique(data['label'])}})
             data = clean_non_numeric_values(data, numerical_cols)
 
         print("WISDM dataset contains {} samples and {} as features".format(len(data), pd.unique(data['label'])))
@@ -91,7 +93,9 @@ class DataLoader:
             data["label"] = data["activity"].map({0: "walking", 1: "jogging"})
             # combine date and time to timestamp
             data['timestamp'] = data['date'] + "-" + data['time']
-            data = data.rename(columns={"acceleration_x": "acc.x", "acceleration_y": "acc.y", "acceleration_z": "acc.z"})
+            data = data.rename(columns={"acceleration_x": "acc.x",
+                                        "acceleration_y": "acc.y",
+                                        "acceleration_z": "acc.z"})
             data = data[columns]
         else:
             dirs = "/".join(elem for elem in data_path.split('/')[:-1])
@@ -155,7 +159,6 @@ class DataLoader:
                                            'jog': "jogging"}})
             data.to_csv(os.path.join(data_path, save_as))
 
-
         else:
             print('Loading data from {}'.format(os.path.join(data_path, save_as)))
             data = pd.read_csv(os.path.join(data_path, save_as))
@@ -167,6 +170,29 @@ class DataLoader:
 
         print("Saved data under {}".format(os.path.join(data_path, save_as)))
         return data
+
+    @staticmethod
+    def load_real_data(data_path=DEFAULT_REAL_DATA_PATH):
+        """
+        Loads and transforms real data recorded from my iPhone to a DataFrame (only walking/jogging activity)
+
+        Parameters
+        ----------
+        data_path: str
+            The path to the csv file with the data
+
+        Returns
+        -------
+        pandas DataFrame
+            A DataFrame with walking/jogging activity
+
+        """
+        walking = pd.read_csv(os.path.join(data_path, "real_iphone_data_walking.csv"))
+        walking['label'] = "walking"
+        jogging = pd.read_csv(os.path.join(data_path, "real_iphone_data_jogging.csv"))
+        jogging['label'] = "jogging"
+        df = pd.concat([walking, jogging], ignore_index=True, sort=False)
+        return df
 
 
 if __name__ == '__main__':
