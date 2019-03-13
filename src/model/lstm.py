@@ -7,7 +7,6 @@ from src.model.keras_base_model import KerasBaseModel
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, LSTM, Reshape, Bidirectional
 import numpy as np
-from keras.utils import to_categorical
 import os
 from keras.utils.vis_utils import plot_model
 
