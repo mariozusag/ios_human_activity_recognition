@@ -38,8 +38,97 @@ contain accelerator measurements. I have used the lab data (not the actitracker)
     > - Carried on left and right wrist
     > - Feature set: walking, jogging
 
-### File-structure
+4. ***My iPhone Data***
+    > - in `data/my_iphone_data`
+    > - Sampling rate = 50Hz 
+    > - Device = iPhone8
+    > - Carried in front pocket
+    > - Feature set: walking, jogging
+
+### Usage
+
+### Results on motionSense data
+I have randomly split the train and test sets in a ratio of 75:25. 
+As we want 10 seconds of data and motionSense was recorded with 50Hz, we need
+10/(1/50) datapoints - therefore each sample contains 500 `[acc.x, acc.y, acc.z]` measurements. 
+
+|Experiment| Precision Walking | Precision Jogging | Recall Walking | Recall Jogging | F1 Walking | F1 Jogging |
+| --- | --- | --- | --- | --- | --- | --- |
+|**LSTM_2019-03-12-22:18:28** | 0.99     | 0.99 | 0.99 | 0.99     | 0.99 | 0.99      |
+|**CNN_** | ? | ?     | ?     | ? | ?     | ?  |
+
+*Comment: It is a very simple classification task, which is why the performance is close to 100%. 
+
+### Usage 
+1. Clone repository and download all datasets
+    ```
+    git clone git@github.ibm.com:mariozusag/ios_human_activity_recognition.git
+    ```
+2. Install dependencies
     
+    (suggested) Install with `virtual environment`
+    ```
+    cd ios_human_activity_recognition
+    python3 -m venv har_env
+    source har_env/bin/activate
+    pip3 install -r requirements.txt
+    ```
+    (alternative) Install with `pip version 3.5` or `3.6`
+    ```
+    cd ios_human_activity_recognition
+    pip3 install -r requirements.txt
+    ```
+    
+3. Project structure
+    
+    ```
+    cd ios_human_activity_recognition
+    cd data
+    mkdir motion_sense output run_walk train_test wisdm_lab
+    mv ../all_motionSenseData/* data/motion_sense
+    mv ../all_wisdmDataLab/* data/wisdm_lab
+    mv ../all_RunWalkDataLab/* data/run_walk
+    ```
+    ```
+    data
+    ├── motion_sense      # folder with all motionSense data (just put them there like you downloaded them)
+    ├── my_iphone_data    # folder with two 10s  measurements from my iPhone
+    ├── output    # output folder, where the results of the deep learning models are saved to
+    │   ├── experimental_results
+    │       ├── LSTM_2019-03-12-22:18:28
+    ├── ...
+    │
+    docs
+    ├── resources       
+    │
+    src
+    ├── model 
+    │   ├── cnn.py   # convolutional neural network for human activity recognition      
+    │   ├── keras_base_model.py      # framework for keras models    
+    │   ├── lstm.py   # recurrent neural network for human activity recognition                
+    │   └── transform_into_coreml.py    # transform a trained .h5 model into a CoreML model, which can be deployed on an iPhone                  
+    ├── preprocessing 
+    │   ├── data_loader.py      # loads each data into a DataFrame
+    │   ├── train_test_split.py   # transforms a DataFrame to train/test data for Human Activity Recognitin
+    ├── visualization 
+    │   ├── visalization.py      # visualizes accelerometer data
+    ├── utilities.py    # set of utility functions
+    │
+    iOS-Human-Activity-Recognition.ipynb    # a Jupyter Notebook going through all the steps of the module
+    │
+    tests
+    ├── unittests 
+    
+    ```
+
+4. Running the module
+
+    ```
+    cd ios_human_activity_recognition
+    jupyter notebook
+    ```
+    Then open and run the iOS-Human-Activity-Recognition.ipynb step for step
+
 ### Predicting Human Activity
 
 ### iOS App

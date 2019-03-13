@@ -20,4 +20,4 @@ def transform_h5_to_coreml(h5_model_path='../../data/output/experimental_results
 
 
 if __name__ == '__main__':
-    transform_h5_to_coreml('../../data/output/experimental_results/LSTM_2019-03-12-22:18:28/model.h5')
+    transform_h5_to_coreml('../../data/output/experimental_results/LSTM_2019-03-13-14:15:20/model.h5')

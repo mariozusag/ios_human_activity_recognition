@@ -13,7 +13,7 @@ from src.preprocessing.data_loader import DataLoader
 class_mapping = {"walking": 0, "jogging": 1}
 
 
-def get_train_test_data(df, save_to, hertz=50, milliseconds=10000, test_split=0.25, balance=True):
+def get_train_test_data(df, save_to, means, stds, hertz=50, milliseconds=10000, test_split=0.25, balance=True):
     """
     Transforms the data in df into arrays for training and testing
 
@@ -22,6 +22,10 @@ def get_train_test_data(df, save_to, hertz=50, milliseconds=10000, test_split=0.
     df: pandas DataFrame
     save_to: str
         Path to where the data should be saved to
+    maxima: dict
+        A dictionary with maxima for each acceleration direction
+    minima: dict
+        A dictionary with minima for each acceleration direction
     hertz: int
         The frequency with which the data was collected
     milliseconds: int
@@ -76,7 +80,13 @@ def get_train_test_data(df, save_to, hertz=50, milliseconds=10000, test_split=0.
     print("y_train shape: {}".format(y_train.shape))
     print("X_test shape:  {}".format(X_test.shape))
     print("y_test shape:  {}".format(X_test.shape))
-    np.savez_compressed(save_to, X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test)
+    np.savez_compressed(save_to,
+                        X_train=X_train,
+                        X_test=X_test,
+                        y_train=y_train,
+                        y_test=y_test,
+                        means=means,
+                        stds=stds)
 
     return X_train, X_test, y_train, y_test
 
@@ -85,4 +95,6 @@ if __name__ == '__main__':
     data_loader = DataLoader()
     motionsense_df = data_loader.load_motion_sense_data_as_df()
     X_train, X_test, y_train, y_test = get_train_test_data(motionsense_df,
+                                                           means={},
+                                                           stds={},
                                                            save_to='../../data/train_test/motion_sense_data.npz')

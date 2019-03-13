@@ -35,6 +35,22 @@ def append_df(df_orig, df_to_append, label):
 
 
 def clean_non_numeric_values(df, cols):
+    """
+    Cleans away non-numerical values of a DataFrame
+
+    Parameters
+    ----------
+    df: pandas DataFrame
+        The pandas DataFrame, where we want to remove non-numerical values from
+    cols: list
+        The columns of df, where we want to remove non-numerical values form
+
+    Returns
+    -------
+    pandas DataFrame
+    The pandas DataFrame, with only numerical values in the specified columns
+
+    """
     for col in cols:
         df = df[(~pd.to_numeric(df[col], errors='coerce').isnull())]
         df[col] = pd.to_numeric(df[col])
@@ -44,7 +60,25 @@ def clean_non_numeric_values(df, cols):
 def plot_classification_report(classificationReport,
                                title='Classification report',
                                cmap='YlGnBu',
-                               save_as='../experimental_results/CNN_2019-02-19-13:44:04_best/report.pdf'):
+                               save_as='../experimental_results/report.pdf'):
+    """
+    Plot a sklearn classification report
+
+    Parameters
+    ----------
+    classificationReport: str
+        The classification report as it comes from sklearn
+    title: str
+        The title of the plot
+    cmap: str or plt.cmap
+        Colormap
+    save_as: str
+        The path, where we want to store the classification report plot
+
+    Returns
+    -------
+
+    """
 
     classificationReport = classificationReport.replace('\n\n', '\n')
     classificationReport = classificationReport.replace(' / ', '/')
@@ -80,3 +114,59 @@ def plot_classification_report(classificationReport,
     plt.xlabel('Classes')
     plt.tight_layout()
     plt.savefig(save_as)
+
+
+def min_max_normalize_df(df):
+    """
+    Normalizes the acceleration values to range 0,1 and returns the maxima and minima of the complete df
+
+    Parameters
+    ----------
+    df: pandas DataFrame
+        The DataFrame we want to normalize
+
+    Returns
+    -------
+    tuple
+    Returns the normalized DataFrame, the maxima and the minima of the acceleration
+    values (before normalization) for re-use at testing
+    """
+    accelerations = ['acc.x', 'acc.y', 'acc.z']
+    minima = {}
+    maxima = {}
+    for acc in accelerations:
+        minima[acc] = df[acc].min()
+        df[acc] += abs(df[acc].min())
+        maxima[acc] = df[acc].max()
+        df[acc] /= abs(df[acc].max())
+
+    return df, maxima, minima
+
+
+def zero_mean_unit_variance_normalize_df(df):
+    """
+    Normalizes the acceleration values to zero mean and unit variance, returns mean and std for each acceleration axis
+
+    Parameters
+    ----------
+    df: pandas DataFrame
+        The DataFrame we want to normalize
+
+    Returns
+    -------
+    tuple
+    Returns the normalized DataFrame, the means and the standard deviations of the acceleration
+    values (before normalization) for re-use at testing
+    """
+    accelerations = ['acc.x', 'acc.y', 'acc.z']
+    means = {}
+    stds = {}
+    for acc in accelerations:
+        mu = np.mean(df[acc], axis=0)
+        sigma = np.std(df[acc], axis=0)
+
+        means[acc] = mu
+        stds[acc] = sigma
+        df[acc] = (df[acc] - mu)/sigma
+
+    return df, means, stds
