@@ -8,7 +8,7 @@ import seaborn as sns
 import numpy as np
 
 
-def append_df(df_orig, df_to_append, label):
+def append_df(df_orig: pd.DataFrame, df_to_append: pd.DataFrame, label: str):
     """
     Concatenates two DataFrames and adds the current label to each row of the df_to_append
 
@@ -34,7 +34,7 @@ def append_df(df_orig, df_to_append, label):
         return pd.concat([df_orig, df_to_append], ignore_index=True, sort=False)
 
 
-def clean_non_numeric_values(df, cols):
+def clean_non_numeric_values(df: pd.DataFrame, cols: list):
     """
     Cleans away non-numerical values of a DataFrame
 
@@ -57,7 +57,7 @@ def clean_non_numeric_values(df, cols):
     return df
 
 
-def plot_classification_report(classificationReport,
+def plot_classification_report(classification_report,
                                title='Classification report',
                                cmap='YlGnBu',
                                save_as='../experimental_results/report.pdf'):
@@ -66,7 +66,7 @@ def plot_classification_report(classificationReport,
 
     Parameters
     ----------
-    classificationReport: str
+    classification_report: str
         The classification report as it comes from sklearn
     title: str
         The title of the plot
@@ -80,11 +80,11 @@ def plot_classification_report(classificationReport,
 
     """
 
-    classificationReport = classificationReport.replace('\n\n', '\n')
-    classificationReport = classificationReport.replace(' / ', '/')
-    lines = classificationReport.split('\n')
+    classification_report = classification_report.replace('\n\n', '\n')
+    classification_report = classification_report.replace(' / ', '/')
+    lines = classification_report.split('\n')
 
-    classes, plotMat, support, class_names = [], [], [], []
+    classes, plot_mat, support, class_names = [], [], [], []
     for line in lines[1:]:
         t = line.strip().split()
         if len(t) < 2:
@@ -98,15 +98,15 @@ def plot_classification_report(classificationReport,
             class_names.append(t[0])
         support.append(int(t[-1]))
 
-        plotMat.append(v)
+        plot_mat.append(v)
 
-    plotMat = np.array(plotMat)
+    plot_mat = np.array(plot_mat)
     xticklabels = ['Precision', 'Recall', 'F1-score']
     yticklabels = ['{0} ({1})'.format(class_names[idx], sup)
                    for idx, sup in enumerate(support)]
 
     plt.figure()
-    sns.heatmap(plotMat, fmt=".1f", square=True, annot=True, cmap=cmap,
+    sns.heatmap(plot_mat, fmt=".1f", square=True, annot=True, cmap=cmap,
                 cbar=True, xticklabels=xticklabels, yticklabels=yticklabels)
     plt.title(title)
     plt.xticks(rotation=45)
@@ -116,7 +116,7 @@ def plot_classification_report(classificationReport,
     plt.savefig(save_as)
 
 
-def min_max_normalize_df(df):
+def min_max_normalize_df(df: pd.DataFrame):
     """
     Normalizes the acceleration values to range 0,1 and returns the maxima and minima of the complete df
 
@@ -143,7 +143,7 @@ def min_max_normalize_df(df):
     return df, maxima, minima
 
 
-def zero_mean_unit_variance_normalize_df(df):
+def zero_mean_unit_variance_normalize_df(df: pd.DataFrame):
     """
     Normalizes the acceleration values to zero mean and unit variance, returns mean and std for each acceleration axis
 

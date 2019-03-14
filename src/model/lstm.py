@@ -1,6 +1,6 @@
 # Mario Zusag mariozusag@gmail.com
 # 11.03.19
-# Purpose:
+# Purpose: Contains the class for an RNN implementation in Keras
 # Description:
 
 from src.model.keras_base_model import KerasBaseModel
@@ -52,7 +52,7 @@ class RecurrentNeuralNetwork(KerasBaseModel):
         X_train: numpy ndarray
             Train data in the format [n_samples, n_datapoints, n_features]
         y_train
-            Train labels in the format [n_samples, ]
+            Train labels in the format [n_samples, n_labels]
         Returns
         -------
         keras Sequential model
@@ -81,17 +81,20 @@ class RecurrentNeuralNetwork(KerasBaseModel):
 
         return self.model
 
-    def test_model(self, X_test, y_test, target_names=None):
+    def test_model(self, X_test: np.array, y_test: np.array, target_names=None):
         """
-        Runs several performance measures and saves the results
+        Tests the trained classifier on X_test and creates several performance reports
+
         Parameters
         ----------
-        X_test: numpy ndarray
-        y_test
-        target_names
+        X_test: np.array
+        y_test: np.array
+        target_names: list
+            A list of strings with the targets
 
         Returns
         -------
+        None
 
         """
         super(RecurrentNeuralNetwork, self).test_model(X_test, y_test, target_names=target_names)
@@ -101,6 +104,6 @@ class RecurrentNeuralNetwork(KerasBaseModel):
 if __name__ == '__main__':
     rnn = RecurrentNeuralNetwork()
     data = np.load("../../data/train_test/motion_sense_data.npz")
-    X_train, X_test, y_train, y_test = data["X_train"], data["X_test"], data["y_train"], data["y_test"]
-    model = rnn.build_model(X_train=X_train, y_train=y_train)
-    rnn.test_model(X_test=X_test, y_test=y_test)
+    X_train_rnn, X_test_rnn, y_train_rnn, y_test_rnn = data["X_train"], data["X_test"], data["y_train"], data["y_test"]
+    model = rnn.build_model(X_train=X_train_rnn, y_train=y_train_rnn)
+    rnn.test_model(X_test=X_test_rnn, y_test=y_test_rnn)

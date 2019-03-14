@@ -45,19 +45,13 @@ contain accelerator measurements. I have used the lab data (not the actitracker)
     > - Carried in front pocket
     > - Feature set: walking, jogging
 
-### Usage
+![Datasets visualization](docs/resources/n_samples_plot.png)
 
 ### Results on motionSense data
 I have randomly split the train and test sets in a ratio of 75:25. 
 As we want 10 seconds of data and motionSense was recorded with 50Hz, we need
 10/(1/50) datapoints - therefore each sample contains 500 `[acc.x, acc.y, acc.z]` measurements. 
-
-|Experiment| Precision Walking | Precision Jogging | Recall Walking | Recall Jogging | F1 Walking | F1 Jogging |
-| --- | --- | --- | --- | --- | --- | --- |
-|**LSTM_2019-03-12-22:18:28** | 0.99     | 0.99 | 0.99 | 0.99     | 0.99 | 0.99      |
-|**CNN_** | ? | ?     | ?     | ? | ?     | ?  |
-
-*Comment: It is a very simple classification task, which is why the performance is close to 100%. 
+For both, CNN and LSTM, I reach close to 100% on the test set (It is a very simple classification task)
 
 ### Usage 
 1. Clone repository and download all datasets
@@ -129,6 +123,10 @@ As we want 10 seconds of data and motionSense was recorded with 50Hz, we need
     ```
     Then open and run the iOS-Human-Activity-Recognition.ipynb step for step
 
-### Predicting Human Activity
-
 ### iOS App
+The code for the iOS App can be found here: https://github.com/mariozusag/activity-prediction-app
+
+### Screenshots
+Homescreen                 |  10s screen               |  10s prediction           | Live version  
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
+![](docs/resources/HAR_HomeScreen.png)    |  ![](docs/resources/HAR_10s.png)         | ![](docs/resources/HAR_10s_prediction.png)| ![Live](docs/resources/HAR_live.png)
