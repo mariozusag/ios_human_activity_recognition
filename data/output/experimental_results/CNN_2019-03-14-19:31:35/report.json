@@ -1,0 +1,1 @@
+"              precision    recall  f1-score   support\n\n     Walking      1.000     0.999     1.000      1635\n     Jogging      0.999     1.000     1.000      1715\n\n   micro avg      1.000     1.000     1.000      3350\n   macro avg      1.000     1.000     1.000      3350\nweighted avg      1.000     1.000     1.000      3350\n"
