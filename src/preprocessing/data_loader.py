@@ -1,6 +1,6 @@
 # Mario Zusag mariozusag@gmail.com
 # 06.03.19
-# Purpose:
+# Purpose: Loads different datasets and transforms them into pandas DataFrames
 # Description:
 
 import pandas as pd

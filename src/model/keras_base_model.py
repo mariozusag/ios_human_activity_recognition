@@ -1,7 +1,7 @@
 # Mario Zusag mariozusag@gmail.com
 # 12.03.19
-# Purpose:      Framework for training and testing binary NN classifiers.
-# Description:  Initializes a binary classifier with all necessary parameters and saves the test results in a
+# Purpose:      Framework for testing ML classifiers
+# Description:  Initializes a classifier with all necessary parameters and saves the test results in a
 #               new folder, which is named after the time of the test run
 import numpy as np
 import os
@@ -15,7 +15,7 @@ import datetime
 
 class KerasBaseModel:
 
-    def __init__(self, name, experiments_path='../../data/output/experimental_results', classifier=None):
+    def __init__(self, name: str, experiments_path='../../data/output/experimental_results', classifier=None):
         """
         Initializes the classifier framework
 
@@ -44,9 +44,10 @@ class KerasBaseModel:
         Sets the classifier
         :return: None
         """
+
         self.classifier = classifier
 
-    def train_model(self, X_train, y_train):
+    def train_model(self, X_train: np.array, y_train: np.array):
         """
         Trains the model
 
@@ -71,19 +72,23 @@ class KerasBaseModel:
         self.classifier.fit(X_train, y_train)
         return self.classifier
 
-    def test_model(self, X_test, y_test, target_names=None):
+    def test_model(self, X_test: np.array, y_test: np.array, target_names=None):
         """
+        Tests the trained classifier on X_test and creates several performance reports
 
         Parameters
         ----------
-        X_test
-        y_test
-        target_names
+        X_test: np.array
+        y_test: np.array
+        target_names: list
+            A list of strings with the targets
 
         Returns
         -------
+        None
 
         """
+
         print("Testing model ... ")
         if target_names is None:
             target_names = ['Walking', 'Jogging']
@@ -143,16 +148,21 @@ class KerasBaseModel:
     @staticmethod
     def plot_history(history, file_path):
         """
+        Plots the training history (train/val accuracy, train/val loss) of a classifier
 
         Parameters
         ----------
-        history
-        file_path
+        history: keras.model.history
+            History object from Keras
+        file_path: str
+            The file path, where we want to save the history plot to
 
         Returns
         -------
+        None
 
         """
+
         print("Plotting training history ... ")
         loss_list = [s for s in history.history.keys() if 'loss' in s and 'val' not in s]
         val_loss_list = [s for s in history.history.keys() if 'loss' in s and 'val' in s]
